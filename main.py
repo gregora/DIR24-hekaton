@@ -7,4 +7,10 @@ import sys
 
 from pipeline import pipeline, demo
 
-demo()
+
+
+image, objects = pipeline()
+
+objects = np.array(objects)
+
+print(objects)

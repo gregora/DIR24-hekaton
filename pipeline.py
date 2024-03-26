@@ -53,6 +53,7 @@ def pipeline():
     centers = centers.astype(int)
 
     masks = []
+    objects = []
 
     for i, center in enumerate(centers):
 
@@ -60,7 +61,6 @@ def pipeline():
             continue
 
         area = segmented[2][i][4]
-        print("Area of " + str(i) + " is: " + str(area))
         
         cv2.circle(image, (center[0], center[1]), 5, (0, 0, 255, 1), -1)
 
@@ -99,10 +99,12 @@ def pipeline():
 
             cv2.line(image, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
+            objects.append((center_x, center_y, angle, width, height))
+
 
         masks.append(mask)
 
-    return image
+    return image, objects
 
 
 def demo():
