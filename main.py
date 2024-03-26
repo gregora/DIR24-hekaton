@@ -9,8 +9,8 @@ from pipeline import pipeline, demo
 
 
 
-image, objects = pipeline()
+#image, objects = pipeline()
+#objects = np.array(objects)
+#print(objects)
 
-objects = np.array(objects)
-
-print(objects)
+demo()

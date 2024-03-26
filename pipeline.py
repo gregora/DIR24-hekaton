@@ -25,8 +25,19 @@ def pipeline():
 
     return_value, image = camera.read()
 
-    image = image[247:349, 97:254, :]
-    image = cv2.resize(image, (640, 480))
+    x1, y1 = 70, 65
+    x2, y2 = 179, 69
+    x3, y3 = 171, 222
+    x4, y4 = 58, 219
+
+    w, h = 210, 300
+
+    pts1 = np.float32([[x1, y1], [x2, y2], [x3, y3], [x4, y4]])
+    pts2 = np.float32([[0, 0], [w, 0], [w, h], [0, h]])
+
+    matrix = cv2.getPerspectiveTransform(pts1, pts2)
+
+    image = cv2.warpPerspective(image, matrix, (w, h))
 
 
     grey = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -110,7 +121,7 @@ def pipeline():
 def demo():
 
     while True:
-        image = pipeline()
+        image, _ = pipeline()
 
         cv2.imshow('image', image)
 
