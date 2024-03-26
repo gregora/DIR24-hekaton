@@ -11,7 +11,7 @@ import sys
 
 def pipeline():
 
-    camera = cv2.VideoCapture(2)
+    camera = cv2.VideoCapture(0)
 
     #camera settigs ids:
     # - brightness: 10
@@ -84,8 +84,6 @@ def pipeline():
 
         area = segmented[2][i][4]
         
-        cv2.circle(image_cropped, (center[0], center[1]), 5, (0, 0, 255, 1), -1)
-
         mask = np.zeros_like(dilated)
         mask[segmented[1] == i] = 255
 
@@ -111,6 +109,7 @@ def pipeline():
             box = cv2.boxPoints(rect)
             box = np.int0(box)
 
+            cv2.circle(image_cropped, (int(center_x), int(center_y)), 3, (0, 0, 255, 1), -1)
             cv2.drawContours(image_cropped, [box], 0, (255, 0, 0), 2)
 
             # draw line to show angle
@@ -121,7 +120,16 @@ def pipeline():
 
             cv2.line(image_cropped, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
-            objects.append((center_x, center_y, angle, width, height))
+            # transform center to original image
+            cent = np.array([[center_x, center_y]], dtype=np.float32)
+            cent = np.array([cent])
+
+            matrix_inv = cv2.getPerspectiveTransform(pts2, pts1)
+            cent = cv2.perspectiveTransform(cent, matrix_inv)
+
+            center_x, center_y = cent[0][0]
+
+            objects.append((center_x, center_y, angle, width, height, area))
 
 
         masks.append(mask)
@@ -129,11 +137,15 @@ def pipeline():
     
     #unwarp cropping
     
-    matrix = cv2.getPerspectiveTransform(pts2, pts1)
+    matrix_inv = cv2.getPerspectiveTransform(pts2, pts1)
 
-    image_cropped = cv2.warpPerspective(image_cropped, matrix, (image.shape[1], image.shape[0]))
+    image_cropped = cv2.warpPerspective(image_cropped, matrix_inv, (image.shape[1], image.shape[0]))
 
     image = np.where(image_cropped > 0, image_cropped, image)
+
+    #for o in objects:
+    #    x, y, angle, width, height, area = o
+    #    cv2.circle(image, (int(x), int(y)), 3, (255, 0, 0, 1), -1) #check if reverse transformation is correct
 
     return image, objects
 
@@ -141,9 +153,13 @@ def pipeline():
 def demo():
 
     while True:
-        image, _ = pipeline()
+        image, objects = pipeline()
 
         cv2.imshow('image', image)
+
+        print(np.array(objects))
+        print()
+        
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
