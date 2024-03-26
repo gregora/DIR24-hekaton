@@ -1,0 +1,2 @@
+ffmpeg -f v4l2 -video_size 640x480 -i /dev/video2 -vf "format=yuv420p" -f sdl "Webcam Feed" &
+env BAMF_DESKTOP_FILE_HINT=/var/lib/snapd/desktop/applications/cameractrls_cameractrlsgtk.desktop /snap/bin/cameractrls.cameractrlsgtk
