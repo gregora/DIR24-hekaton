@@ -25,10 +25,21 @@ def pipeline():
 
     return_value, image = camera.read()
 
-    x1, y1 = 70, 65
-    x2, y2 = 179, 69
-    x3, y3 = 171, 222
-    x4, y4 = 58, 219
+    #use calibration.npz file to undistort image
+
+    calibration = np.load('calibration.npz')
+    mtx = calibration['mtx']
+    dist = calibration['dist']
+
+    rvecs = calibration['rvecs']
+    tvecs = calibration['tvecs']
+
+    image = cv2.undistort(image, mtx, dist, None, mtx)
+
+    x1, y1 = 70, 82
+    x2, y2 = 183, 61
+    x3, y3 = 179, 209
+    x4, y4 = 70, 201
 
     w, h = 210, 300
 
@@ -37,10 +48,10 @@ def pipeline():
 
     matrix = cv2.getPerspectiveTransform(pts1, pts2)
 
-    image = cv2.warpPerspective(image, matrix, (w, h))
+    image_cropped = cv2.warpPerspective(image, matrix, (w, h))
+    
 
-
-    grey = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    grey = cv2.cvtColor(image_cropped, cv2.COLOR_BGR2GRAY)
 
 
     #get treshold value using otsu
@@ -73,7 +84,7 @@ def pipeline():
 
         area = segmented[2][i][4]
         
-        cv2.circle(image, (center[0], center[1]), 5, (0, 0, 255, 1), -1)
+        cv2.circle(image_cropped, (center[0], center[1]), 5, (0, 0, 255, 1), -1)
 
         mask = np.zeros_like(dilated)
         mask[segmented[1] == i] = 255
@@ -100,7 +111,7 @@ def pipeline():
             box = cv2.boxPoints(rect)
             box = np.int0(box)
 
-            cv2.drawContours(image, [box], 0, (255, 0, 0), 2)
+            cv2.drawContours(image_cropped, [box], 0, (255, 0, 0), 2)
 
             # draw line to show angle
             x1 = int(center_x)
@@ -108,12 +119,21 @@ def pipeline():
             x2 = int(center_x + 50 * np.cos(angle * np.pi / 180))
             y2 = int(center_y + 50 * np.sin(angle * np.pi / 180))
 
-            cv2.line(image, (x1, y1), (x2, y2), (0, 255, 0), 2)
+            cv2.line(image_cropped, (x1, y1), (x2, y2), (0, 255, 0), 2)
 
             objects.append((center_x, center_y, angle, width, height))
 
 
         masks.append(mask)
+
+    
+    #unwarp cropping
+    
+    matrix = cv2.getPerspectiveTransform(pts2, pts1)
+
+    image_cropped = cv2.warpPerspective(image_cropped, matrix, (image.shape[1], image.shape[0]))
+
+    image = np.where(image_cropped > 0, image_cropped, image)
 
     return image, objects
 
