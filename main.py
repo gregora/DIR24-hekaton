@@ -2,6 +2,8 @@ import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 
+import math
+
 import sys
 
 
@@ -29,6 +31,25 @@ robot.client_send("StartB*")
 
 for x, y, angle, width, height, area in objects:
 
+    rz = angle + 180
+
+    if rz > 180:
+        rz -= 180
+
+    calculation_angle = rz + 90
+    calculation_angle = - calculation_angle
+
+    print("Calculation angle: " + str(calculation_angle))
+
+    x_offset = 0  - math.sin(math.radians(calculation_angle)) * 70
+    y_offset = 70 + math.cos(math.radians(calculation_angle)) * 70
+
+    x_calibration_offset = -5.5
+    y_calibration_offset = 0
+
+    x_offset += x_calibration_offset
+    y_offset += y_calibration_offset
+
     time.sleep(1)
     print(x, y, angle, width, height, area)
     sizes = {
@@ -43,7 +64,7 @@ for x, y, angle, width, height, area in objects:
     print("Picking up " + sizes[nearest] + " object")
     print(str(x) + " " + str(y))
 
-    robot.client_send_cords(x, y, z, rx, ry, rz)
+    robot.client_send_cords(x - x_offset, y - y_offset, z, rx, ry, rz)
     time.sleep(30)
 
 robot.client_send("stop*")
