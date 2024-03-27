@@ -22,6 +22,8 @@ def pipeline(debug_show = False):
     # - exposure: 15
 
     camera.set(10, 130)
+    camera.set(11, 50)
+    camera.set(15, 255)
 
     return_value, image = camera.read()
 
@@ -37,10 +39,12 @@ def pipeline(debug_show = False):
     image = cv2.undistort(image, mtx, dist, None, mtx)
 
 
-    x1, y1 = 188, 25
+    x1, y1 = 188, 18
     x2, y2 = 440, 31
     x3, y3 = 443, 203
-    x4, y4 = 178, 196
+    x4, y4 = 173, 196
+
+    cropping_points = np.array([[x1, y1], [x2, y2], [x3, y3], [x4, y4]], dtype=np.int32)
 
     w, h = 300, 210
 
@@ -166,6 +170,9 @@ def pipeline(debug_show = False):
     image_cropped = cv2.warpPerspective(image_cropped, matrix_inv, (image.shape[1], image.shape[0]))
 
     image = np.where(image_cropped > 0, image_cropped, image)
+
+    for p in cropping_points:
+        cv2.circle(image, (p[0], p[1]), 3, (255, 0, 0, 1), -1)
 
     #for o in objects:
     #    x, y, angle, width, height, area = o
