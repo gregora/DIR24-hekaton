@@ -23,17 +23,29 @@ robot = Robot()
 
 image, objects = pipeline(debug_show=True)
 
-x, y, angle, width, height, area = objects[0]
+#time.sleep(1)
 
-print(x, y, angle, width, height, area)
+robot.client_send("StartB*")
 
+for x, y, angle, width, height, area in objects:
 
-# DANGER
-robot.client_send("StartA*")
-# robot.client_send_cords(x, y, z, rx, ry, rz)
+    time.sleep(1)
+    print(x, y, angle, width, height, area)
+    sizes = {
+        200: "small",
+        410: "medium",
+        600: "large"
+    }
 
+    #find nearest number for area from 200, 400, 600
+    nearest = min(sizes.keys(), key=lambda x: abs(x - area))
 
-#robot.close_socket()
+    print("Picking up " + sizes[nearest] + " object")
+    print(str(x) + " " + str(y))
 
+    robot.client_send_cords(x, y, z, rx, ry, rz)
+    time.sleep(30)
 
-time.sleep(20)
+robot.client_send("stop*")
+
+robot.close_socket()

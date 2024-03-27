@@ -120,7 +120,7 @@ def pipeline(debug_show = False):
 
             contour_area = cv2.contourArea(c)
 
-            if contour_area < 50:
+            if contour_area < 100:
                 continue
 
             x, y, w, h = cv2.boundingRect(c)
