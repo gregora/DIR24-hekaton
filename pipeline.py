@@ -44,6 +44,24 @@ def pipeline(debug_show = False):
     x3, y3 = 443, 203
     x4, y4 = 173, 196
 
+    base_x1, base_y1 = 313.34, -145.6
+    base_x2, base_y2 = 319.8, 154.69
+    base_x3, base_y3 = 528.5, 148.82
+    base_x4, base_y4 = 519.5, -147.40
+
+    #draw base points
+
+    #let base be 1000x1000 image
+    base_image = np.zeros((1000, 1000, 3), dtype=np.uint8)
+    if debug_show:
+        #draw base points on base image
+        cv2.circle(base_image, (int(base_x1 + 00), int(base_y1 + 500)), 3, (255, 0, 0, 1), -1)
+        cv2.circle(base_image, (int(base_x2 + 00), int(base_y2 + 500)), 3, (255, 0, 0, 1), -1)
+        cv2.circle(base_image, (int(base_x3 + 00), int(base_y3 + 500)), 3, (255, 0, 0, 1), -1)
+        cv2.circle(base_image, (int(base_x4 + 00), int(base_y4 + 500)), 3, (255, 0, 0, 1), -1)
+
+        
+
     cropping_points = np.array([[x1, y1], [x2, y2], [x3, y3], [x4, y4]], dtype=np.int32)
 
     w, h = 300, 210
@@ -115,6 +133,29 @@ def pipeline(debug_show = False):
             center_x, center_y = rect[0]
             width, height = rect[1]
 
+            #get global coordinates of center by interpolating between base points
+
+            # 0,0 is base_x1, base_y1
+            # w,0 is base_x2, base_y2
+            # w,h is base_x3, base_y3
+            # 0,h is base_x4, base_y4
+
+
+            x = center_x / 300
+            y = center_y / 210
+
+            b_w = base_y2 - base_y1
+            b_h = base_x4 - base_x1
+
+            #print("base width: " + str(base_y2 - base_y1))
+            #print("base height: " + str(base_x4 - base_x1))
+
+            global_center_y = base_y1 + b_w * x
+            global_center_x = base_x1 + b_h * y
+
+            if debug_show:
+                cv2.circle(base_image, (int(global_center_x), int(global_center_y + 500)), 3, (0, 0, 255, 1), -1)
+
             if height > width:
                 angle += 90
 
@@ -157,7 +198,7 @@ def pipeline(debug_show = False):
 
             center_x, center_y = cent[0][0]
 
-            objects.append((center_x, center_y, angle, width, height, area))
+            objects.append((global_center_x, global_center_y, angle, width, height, area))
 
 
         masks.append(mask)
@@ -179,9 +220,10 @@ def pipeline(debug_show = False):
     #    cv2.circle(image, (int(x), int(y)), 3, (255, 0, 0, 1), -1) #check if reverse transformation is correct
 
     if debug_show:
-        cv2.imshow('image', image)
         cv2.imshow('segments', image_segments)
-
+        cv2.imshow('base_image', base_image)
+        cv2.imshow('image', image)
+        
     return image, objects
 
 
@@ -196,5 +238,10 @@ def demo():
         #print()
         
 
+        for o in objects:
+            x, y, angle, width, height, area = o
+            print(x, y)
+
+        print()
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break

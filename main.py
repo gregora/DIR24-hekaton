@@ -6,11 +6,34 @@ import sys
 
 
 from pipeline import pipeline, demo
+from TcpIP_client import Robot
 
+import time
 
 
 #image, objects = pipeline()
 #objects = np.array(objects)
 #print(objects)
 
-demo()
+rx, ry, rz = 9.27, -175, -90
+z = -321
+
+robot = Robot()
+
+
+image, objects = pipeline(debug_show=True)
+
+x, y, angle, width, height, area = objects[0]
+
+print(x, y, angle, width, height, area)
+
+
+# DANGER
+robot.client_send("StartA*")
+# robot.client_send_cords(x, y, z, rx, ry, rz)
+
+
+#robot.close_socket()
+
+
+time.sleep(20)
