@@ -8,7 +8,7 @@ name = sys.argv[1]
 
 def save_picture(name):
 
-    camera = cv2.VideoCapture(2)
+    camera = cv2.VideoCapture(0)
 
     #camera settigs ids:
     # - brightness: 10
