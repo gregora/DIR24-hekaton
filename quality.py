@@ -37,22 +37,69 @@ class quality:
         #Crop the image from max indeks
         orient = self.orientation()
         if orient == 1:
-            pass
+            #Top side image
+            self.dialate = self.dialate[self.max_index:,:]
+            #Make a y histogram of left image from x_middle
+            left = self.dialate[:,0:self.x_middle]
+            right = self.dialate[:,self.x_middle:]
+
+            # plt.figure(figsize=(10,10))
+            # plt.subplot(1,2,1)
+            # plt.imshow(left)
+            # plt.subplot(1,2,2)
+            # plt.imshow(right)
+            # plt.show()
+          
+            bottom_left = left[left.shape[0]//2:, :]
+            bottom_right = right[right.shape[0]//2:, :]
+
+            brightest_pixel_left = np.unravel_index(np.argmax(bottom_left, axis=None), bottom_left.shape)
+            brightest_pixel_right = np.unravel_index(np.argmax(bottom_right, axis=None), bottom_right.shape)
+            brightest_pixel_left = (brightest_pixel_left[0] + left.shape[0]//2, brightest_pixel_left[1])
+            brightest_pixel_right = (brightest_pixel_right[0] + right.shape[0]//2, brightest_pixel_right[1] + right.shape[1])
+
+            # Calculate the distance between the two pixels
+            distance = np.sqrt((brightest_pixel_right[0] - brightest_pixel_left[0])**2 + (brightest_pixel_right[1] - brightest_pixel_left[1])**2)
+
+            print(f"The distance between the brightest pixels is {distance} pixels")
+            #TODO set quality value
+
 
         else:
+            #Bottom side image
+            self.dialate = self.dialate[:self.max_index,:]
+            left = self.dialate[:,0:self.x_middle]
+            right = self.dialate[:,self.x_middle:]
+
+            # plt.figure(figsize=(10,10))
+            # plt.subplot(1,2,1)
+            # plt.imshow(left)
+            # plt.subplot(1,2,2)
+            # plt.imshow(right)
+            # plt.show()  
             #Bootom side image
-            self.dialate = self.dialate[0:self.max_index,:]
-            pass
+            top_left = left[:left.shape[0]//2:, :]
+            top_right = right[:right.shape[0]//2:, :]
+
+            brightest_pixel_left = np.unravel_index(np.argmax(top_left, axis=None), top_left.shape)
+            brightest_pixel_right = np.unravel_index(np.argmax(top_right, axis=None), top_right.shape)
+
+            brightest_pixel_left = (brightest_pixel_left[0] + left.shape[0]//2, brightest_pixel_left[1])
+            brightest_pixel_right = (brightest_pixel_right[0] + right.shape[0]//2, brightest_pixel_right[1] + right.shape[1])
+
+            distance = np.sqrt((brightest_pixel_right[0] - brightest_pixel_left[0])**2 + (brightest_pixel_right[1] - brightest_pixel_left[1])**2)
+
+            print(f"The distance between the brightest pixels is {distance} pixels")
         
-        plt.figure(figsize=(10,10))
         
-        plt.imshow(self.dialate, cmap='gray')
-        plt.show()
+        # plt.figure(figsize=(10,10))
+        # plt.imshow(self.dialate, cmap='gray')
+        # plt.show()
         
 
 
 if __name__ == "__main__":
-    img = cv2.imread('quality2.png')
+    img = cv2.imread('quality4.png')
     q = quality(img)
     q.qual()
 
