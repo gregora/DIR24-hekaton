@@ -153,6 +153,12 @@
                 });
             });
 
+            function refresh_image(){
+                fetch("test.png", {cache: 'reload', mode: 'no-cors'})
+            }
+
+            setInterval(refresh_image, 3000);
+
             </script>
 
     </html>

@@ -126,41 +126,56 @@ def plan_b(size):
             if distance >= 5 and distance <= 29:
                 product_ok = True
 
+            product_ok = True
+
             if (product_ok):
                 print("Product is okay!")
                 robot.client_send("Ok*") #quality is okay
 
-                #if tb == 0:
-                #    if size == "medium":
-                #       robot.client_send("Turn medium*")
-                #    if size == "medium":
-                #        robot.client_send("Turn large*")
-                #    rec = ""
-                #    while not "In position" in rec:    
-                #        rec = robot.client_receive()
+                if tb == 0:
+                    if size == "medium":
+                       robot.client_send("Turn medium*")
+                    elif size == "large":
+                        robot.client_send("Turn large*")
+                    rec = ""
+                
+                    while not "Turned" in rec:    
+                        rec = robot.client_receive()
 
-                #place = placed[size]
-                #if size == "medium":
-                #   if place == 1:
-                #       robot.client_send("1*")
-                #   if place == 2:
-                #       robot.client_send("2*")
-                #   if place == 3:
-                #       robot.client_send("3*")
-                #   if place == 4:
-                #       robot.client_send("7*")
-                #   if place == 5:
-                #       robot.client_send("8*")
 
-                #if size == "large":
-                #   if place == 1:
-                #       robot.client_send("4*")
-                #   if place == 2:
-                #       robot.client_send("5*")
-                #   if place == 3:
-                #       robot.client_send("6*")
-                #   if place == 4:
-                #       robot.client_send("9*")
+                else:
+                    if size == "medium":
+                       robot.client_send("No turn medium*")
+                    elif size == "large":
+                        robot.client_send("No turn large*")
+                    rec = ""
+                
+                    while not "Turned" in rec:    
+                        rec = robot.client_receive()
+
+
+                place = placed[size]
+                if size == "medium":
+                   if place == 1:
+                       robot.client_send("1*")
+                   if place == 2:
+                       robot.client_send("2*")
+                   if place == 3:
+                       robot.client_send("3*")
+                   if place == 4:
+                       robot.client_send("7*")
+                   if place == 5:
+                       robot.client_send("8*")
+
+                if size == "large":
+                   if place == 1:
+                       robot.client_send("4*")
+                   if place == 2:
+                       robot.client_send("5*")
+                   if place == 3:
+                       robot.client_send("6*")
+                   if place == 4:
+                       robot.client_send("9*")
                     
 
             else:
