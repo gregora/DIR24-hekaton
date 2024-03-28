@@ -15,7 +15,10 @@ from TcpIP_client import Robot
 
 import time
 
-#robot = Robot()
+
+# ifconfig enp1s0 10.131.42.54 netmask 255.0.0.0
+
+robot = Robot()
 rx, ry, rz = 9.27, -175, -90
 z = -321
 
@@ -36,8 +39,11 @@ def plan_b(size):
 
     print("Plan B - " + size)
 
+    image, objects = pipeline(debug_show=False)
 
-    image, objects = pipeline(debug_show=True)
+    #save image to web/test.png
+    cv2.imwrite("web/test.png", image)
+
     for x, y, angle, width, height, area in objects:
 
         rz = angle + 180
@@ -71,10 +77,17 @@ def plan_b(size):
         nearest = min(sizes.keys(), key=lambda x: abs(x - area))
 
         if(sizes[nearest] == size):
+
+            robot.client_send("StartB*")
             print("Picking up " + sizes[nearest] + " object")
             print(str(x) + " " + str(y))
 
             robot.client_send_cords(x - x_offset, y - y_offset, z, rx, ry, rz)
+
+            rec = robot.client_receive()
+            print("Received: " + rec)
+
+            robot.client_send("Ok*") #quality is okay
             
             robot.client_send("stop*")
             return True

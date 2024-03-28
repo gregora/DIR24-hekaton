@@ -67,7 +67,7 @@
 
         <h1>Redundantni Robotiki</h1>
 
-        <image  src="test.png">
+        <image  src="test.png" id = "image">
 
         <br>
 
@@ -108,6 +108,10 @@
                             if (response.includes("Failed")){
                                 alert("No object of size 'small' found");
                             }
+
+                            //reload page
+                            location.reload();
+
                         }
                     });
                 });
@@ -123,6 +127,7 @@
                             if (response.includes("Failed")){
                                 alert("No object of size 'medium' found");
                             }
+                            location.reload();
 
                         }
                     });
@@ -139,6 +144,8 @@
                             if (response.includes("Failed")){
                                 alert("No object of size 'large' found");
                         }
+                        location.reload();
+
                     }
                     });
                 });

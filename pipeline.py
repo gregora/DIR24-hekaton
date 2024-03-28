@@ -164,8 +164,6 @@ def pipeline(debug_show = False):
             box = cv2.boxPoints(rect)
             box = np.int0(box)
 
-            cv2.circle(image_cropped, (int(center_x), int(center_y)), 3, (0, 0, 255, 1), -1)
-            cv2.drawContours(image_cropped, [box], 0, (255, 0, 0), 2)
 
             sizes = {
                 200: (0, 0, 255),
@@ -181,13 +179,18 @@ def pipeline(debug_show = False):
 
             cv2.drawContours(image_segments, [box], 0, color, 2)
 
+
+            cv2.circle(image_cropped, (int(center_x), int(center_y)), 3, (0, 0, 255, 1), -1)
+            cv2.drawContours(image_cropped, [box], 0, color, 2)
+            
+
             # draw line to show angle
             x1 = int(center_x)
             y1 = int(center_y)
-            x2 = int(center_x + 50 * np.cos(angle * np.pi / 180))
-            y2 = int(center_y + 50 * np.sin(angle * np.pi / 180))
+            x2 = int(center_x + 30 * np.cos(angle * np.pi / 180))
+            y2 = int(center_y + 30 * np.sin(angle * np.pi / 180))
 
-            cv2.line(image_cropped, (x1, y1), (x2, y2), (0, 255, 0), 2)
+            cv2.line(image_cropped, (x1, y1), (x2, y2), (255, 255, 255), 2)
 
             # transform center to original image
             cent = np.array([[center_x, center_y]], dtype=np.float32)
