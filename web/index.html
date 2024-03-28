@@ -1,0 +1,149 @@
+<html>
+
+<head>
+    <title>Redundantni Robotiki</title>
+    </head>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            padding: 0px;
+            margin: 0px;
+        }
+
+
+        #main {
+            margin: auto;
+            width: 800px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 50px;
+        }
+
+        button {
+            font-size: 30px;
+            margin: 20px;
+            border: none;
+            background-color: grey;
+            color: white;
+            padding: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background-color: black;
+        }
+
+        image {
+            width: 40%;
+        }
+
+        #planA {
+            background-color: orange;
+        }
+
+        #planB_s {
+            background-color: red;
+        }
+
+        #planB_m {
+            background-color: green;
+        }
+
+        #planB_l {
+            background-color: blue;
+        }
+
+    </style>
+
+    <body>
+
+    <div id="main">
+
+        <h1>Redundantni Robotiki</h1>
+
+        <image  src="test.png">
+
+        <br>
+
+        <button id="planA">Plan A</button> <br>
+
+        <button id="planB_s">Small</button>
+        <button id="planB_m">Medium</button>
+        <button id="planB_l">Large</button>
+
+    </div>
+    </body>
+
+        <!-- ajax -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+        <script>
+            $(document).ready(function(){
+                $("#planA").click(function(){
+                    $.ajax({
+                        url: "http://localhost:8080",
+                        type: "POST",
+                        data: "planA",
+                        success: function(response){
+                            console.log(response);
+                        }
+                    });
+                });
+            });
+
+
+            $(document).ready(function(){
+                $("#planB_s").click(function(){
+                    $.ajax({
+                        url: "http://localhost:8080",
+                        type: "POST",
+                        data: "planB small",
+                        success: function(response){
+                            if (response.includes("Failed")){
+                                alert("No object of size 'small' found");
+                            }
+                        }
+                    });
+                });
+            });
+
+            $(document).ready(function(){
+                $("#planB_m").click(function(){
+                    $.ajax({
+                        url: "http://localhost:8080",
+                        type: "POST",
+                        data: "planB medium",
+                        success: function(response){
+                            if (response.includes("Failed")){
+                                alert("No object of size 'medium' found");
+                            }
+
+                        }
+                    });
+                });
+            });
+
+            $(document).ready(function(){
+                $("#planB_l").click(function(){
+                    $.ajax({
+                        url: "http://localhost:8080",
+                        type: "POST",
+                        data: "planB large",
+                        success: function(response){
+                            if (response.includes("Failed")){
+                                alert("No object of size 'large' found");
+                        }
+                    }
+                    });
+                });
+            });
+
+            </script>
+
+    </html>
