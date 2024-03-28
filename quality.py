@@ -10,26 +10,30 @@ class quality:
         #Open image 
         self.canny = cv2.Canny(self.image, 150, 200)
         #crop image
-        self.canny = self.canny[200:260, 230:280]
+        self.canny = self.canny[206:264, 301:347]
+
+        #plt.imshow(self.canny, cmap='gray')
+        #plt.show()
+
         kernel = np.ones((2,2), np.uint8)
         self.dialate = cv2.dilate(self.canny, kernel,iterations=1)
 
-        plt.figure(figsize=(10,10))
-        plt.imshow(self.dialate, cmap='gray')
-        plt.show()
+        #plt.figure(figsize=(10,10))
+        #plt.imshow(self.dialate, cmap='gray')
+        #plt.show()
         histogram = np.sum(self.dialate, axis=1)
         self.max_index = np.argmax(histogram)
         x_coords = np.where(self.canny[self.max_index, :] == 255)
         self.x_middle = int(np.round(np.median(x_coords)))
-        print(self.x_middle)
-        print(self.max_index)
+        #print(self.x_middle)
+        #print(self.max_index)
         self.axis_y_len = len(histogram)
-        print(self.axis_y_len)
+        #print(self.axis_y_len)
         if self.max_index < self.axis_y_len/2:
-            print("Top")
+            #print("Top")
             return 1 
         else:
-            print("Bottom")
+            #print("Bottom")
             return 0 
         
 
@@ -61,9 +65,9 @@ class quality:
             # Calculate the distance between the two pixels
             distance = np.sqrt((brightest_pixel_right[0] - brightest_pixel_left[0])**2 + (brightest_pixel_right[1] - brightest_pixel_left[1])**2)
 
-            print(f"The distance between the brightest pixels is {distance} pixels")
+            #print(f"The distance between the brightest pixels is {distance} pixels")
             #TODO set quality value
-
+            return distance
 
         else:
             #Bottom side image
@@ -88,8 +92,10 @@ class quality:
             brightest_pixel_right = (brightest_pixel_right[0] + right.shape[0]//2, brightest_pixel_right[1] + right.shape[1])
 
             distance = np.sqrt((brightest_pixel_right[0] - brightest_pixel_left[0])**2 + (brightest_pixel_right[1] - brightest_pixel_left[1])**2)
+            #print(f"The distance between the brightest pixels is {distance} pixels")
 
-            print(f"The distance between the brightest pixels is {distance} pixels")
+            return distance
+
         
         
         # plt.figure(figsize=(10,10))
@@ -97,9 +103,12 @@ class quality:
         # plt.show()
         
 
-
 if __name__ == "__main__":
-    img = cv2.imread('quality4.png')
+    img = cv2.imread('web/quality.png')
+
+    plt.imshow(img)
+    plt.show()
+
     q = quality(img)
     q.qual()
 

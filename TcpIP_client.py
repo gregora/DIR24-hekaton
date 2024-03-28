@@ -45,6 +45,8 @@ class Robot:
         
         print("Received: " + msg_r)
 
+        return msg_r
+
 
     def client_send_cords(self, x, y, z, rx, ry, rz):
         msg = str(x) + " " + str(y) + " " + str(z) + " " + str(rx) + " " + str(ry) + " " + str(rz) +"*"

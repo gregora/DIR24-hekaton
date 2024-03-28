@@ -226,6 +226,10 @@ def pipeline(debug_show = False):
         cv2.imshow('segments', image_segments)
         cv2.imshow('base_image', base_image)
         cv2.imshow('image', image)
+
+    camera.release()
+
+
         
     return image, objects
 
